@@ -3,7 +3,16 @@
 In this assignment, you will implement three protocols for byzantine assignment. 
 You can use this link as reference: https://decentralizedthoughts.github.io/2019-12-22-dolev-strong/
 
+## Set-up
 
+1. Clone this repo and open in the editor of your choice.
+2. Install the `cryptography` python package which we will be using, in your terminal
+
+```
+pip install cryptography
+```
+
+Note: make sure you install the package via terminal using the same python installation, more on [this](https://edstem.org/us/courses/35448/discussion/2440264). 
 ## Part 1: Two Round Byzantine Agreement with Digital Signatures
 
 First, you will implement a protocol with digital signatures. 
