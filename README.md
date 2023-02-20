@@ -13,7 +13,7 @@ pip install cryptography
 ```
 
 Note: make sure you install the package via terminal using the same python installation, more on [this](https://edstem.org/us/courses/35448/discussion/2440264). 
-## Part 1: Two Round Byzantine Agreement with Digital Signatures
+## Part 1: Two Round Byzantine Agreement with Digital Signatures `naive.py`
 
 First, you will implement a protocol with digital signatures. 
 
@@ -104,7 +104,7 @@ The table should look as follows:
 Explain in words the situation in which validity and agreement do not hold.
 
 
-## Part 2: Dolev-Strong
+## Part 2: Dolev-Strong `ds.py`
 Now that we've motivated the need for a stronger protocol to satisfy validity and agreement, you will implement the Dolev-Strong protocol.
 
 ```
