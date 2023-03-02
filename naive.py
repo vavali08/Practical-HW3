@@ -50,7 +50,7 @@ class Party:
         self.msgs.append(msg)
 
     def relay(self, party, PKI):
-        #TODO: Implement relay for honest party: If you recieved a message in the previous round, forward it to the specified party
+        #TODO: Implement relay for honest party: If you recieved a message, forward it to the specified party
         #TODO: Implement relay for dishonest party
         
 
