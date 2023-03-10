@@ -49,7 +49,7 @@ class Party:
         if should_send:
             if DEBUG: print("Sending", msg, "from", self.num, "to", party.num)
 
-            party.recieve(msg, PKI, round_num)
+            party.receive(msg, PKI, round_num)
 
     def recieve(self, msg, PKI, round_num):
 

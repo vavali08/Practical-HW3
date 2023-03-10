@@ -32,12 +32,23 @@ class Party:
     def send(self, party, msg, PKI):
          if not self.is_honest:
             #TODO: Implement a dishonest send protocol
+            #dishonest send protocol would send diff values to diff individuals
+            if self.is_leader:
+                #to some individuals -> send 1
+                if party.num % 2 == 1:
+                    msg = self.sign(1)
+                #to other individuals -> send 0
+                else:
+                    msg = self.sign(0)
+            else:
+                #bad parties act by sending value that will automatically be deemed as invalid to others
+                msg = self.sign(1)
 
          if DEBUG: print("Sending", msg.value, "from", self.num, "to", party.num)
 
-         party.recieve(msg, PKI)
+         party.receive(msg, PKI)
 
-    def recieve(self, msg, PKI):
+    def receive(self, msg, PKI):
         _sig = msg.sig
         _msg = bytes((msg.value, 0))
         
@@ -51,14 +62,28 @@ class Party:
 
     def relay(self, party, PKI):
         #TODO: Implement relay for honest party: If you recieved a message, forward it to the specified party
+        if self.is_honest:
+            if len(self.msgs) > 0:
+                msg = self.msgs[-1]
+                self.send(party, msg, PKI)
+
         #TODO: Implement relay for dishonest party
         
 
     def decide(self):
         #TODO: implement decision step for both honest and dishonest parties
-        if self.is_honest:  
-
+        if self.is_honest:
+            outputDefault = False
+            v = self.msgs[0].value
+            for msg in self.msgs:
+                if v != msg.value:
+                    outputDefault = True
+            if outputDefault:
+                self.output = DEFAULT
+            else:
+                self.output = v
         else:
+            self.output = 1
 
 
 def validity(general, v, parties):
