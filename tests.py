@@ -1,10 +1,10 @@
 from naive import Party
 from naive import protocol
-#from ds import Party as DsParty
-#from ds import protocol as ds_protocol
+from ds import Party as DsParty
+from ds import protocol as ds_protocol
 from tqdm import tqdm
 
-
+"""
 def test_naive_faulty_general():
     faulty = False
     for i in tqdm(range(0, 1000)):
@@ -54,6 +54,7 @@ def test_naive_honest_general():
     assert (not faulty)
 
 """
+
 def test_ds_faulty_general():
     faulty = False
     for i in tqdm(range(0, 1000)):
@@ -103,10 +104,10 @@ def test_ds_honest_general():
 
     assert (not faulty)
 
-"""
+
 print("TESTING")
 print("=====" * 15)
-
+"""
 try:
     test_naive_faulty_general()
     print("PART 1: TEST 1 PASSED")
@@ -125,7 +126,7 @@ except AssertionError as e:
 """
 try:
     test_ds_faulty_general()
-    print("PART 2: TEST 2 PASSED")
+    print("PART 2: TEST 1 PASSED")
 except AssertionError as e:
     print("PART 2: TEST 1 FAILED")
     print("Validity and agreement should not hold when the general is dishonest")
@@ -137,4 +138,3 @@ try:
 except:
     print("PART 2: TEST 2 FAILED")
     print("Validity and agreement should hold when all parties are honest")
-"""

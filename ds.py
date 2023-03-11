@@ -5,7 +5,7 @@ from cryptography.exceptions import InvalidSignature
 
 import random
 
-DEBUG = False
+DEBUG = True
 DEFAULT = 0
 
 class Signature:
@@ -44,12 +44,24 @@ class Party:
     def send(self, party, msg, PKI, round_num):
         should_send = True
         if not self.is_honest:
-            #TODO: implement a dishonest send protocol. 
+            #TODO: implement a dishonest send protocol.
+            #dishonest send protocol would send diff values to diff individuals
+            if self.is_leader:
+                # to some individuals -> send 1
+                if party.num % 2 == 1:
+                    sig = self.sign(1)
+                # to other individuals -> send 0
+                else:
+                    sig = self.sign(0)
+            else:
+                # bad parties act in dolev strong by not signing valeu -> same as signing invalid value
+                sig = self.sign(1)
 
         if should_send:
             if DEBUG: print("Sending", msg, "from", self.num, "to", party.num)
 
-            party.receive(msg, PKI, round_num)
+            msg.add_sig(sig)
+            party.recieve(msg, PKI, round_num)
 
     def recieve(self, msg, PKI, round_num):
 
@@ -76,19 +88,42 @@ class Party:
         self.msgs.append(msg)
 
     def relay(self, party, PKI, round_num):
-        #If you recieved a message in the previous round, add your signature forward it to the specified party
+        #If you received a message in the previous round, add your signature forward it to the specified party
         last_round_msgs = [m for m in self.msgs if m.round == round_num-1]
 
         #TODO: Implement relay for honest party: If you recieved a message in the previous round, forward it to the specified party
+        if self.is_honest:
+            if len(self.msgs) > 0:
+                msg = last_round_msgs[-1]
+                v = msg.value
+                sig = self.sign(v)
+                msg.add_sig(sig)
+                msg.round = msg.round + 1
+                self.send(party, msg, PKI, round_num+1) #doublecheck this
+
         #TODO: Implement relay for dishonest party
-        
+        #dishonest parties don't relay
+
 
 
     def decide(self):
         #TODO: implement decision step for both honest and dishonest parties
-        if self.is_honest:  
+        if self.is_honest:
+            outputDefault = True
+            if len(self.msgs) > 0:
+                outputDefault = False
+                v = self.msgs[0].value
+                for msg in self.msgs:
+                    if v != msg.value:
+                        outputDefault = True
 
+            if outputDefault:
+                self.output = DEFAULT
+            else:
+                self.output = v
         else:
+            self.output = 1
+
 
 
 def validity(general, v, parties):
@@ -103,8 +138,8 @@ def agreement(parties):
 
 def protocol(parties, PKI, num_rounds):
     #Dolev-strong protocol implementation
-    
-    #Round 1 
+
+    #Round 1
     v = 0
 
     leader = [p for p in parties if p.is_leader]
@@ -112,16 +147,16 @@ def protocol(parties, PKI, num_rounds):
     G = leader[0]
 
     msg = Message(v, [G.sign(v)], 1)
-    
+
     if DEBUG: print("ROUND 1")
 
     round_num = 1
     for party in parties:
         if not party.num == G.num:
             G.send(party, msg, PKI, round_num)
-    
 
-    #Round 2 
+
+    #Round 2
     for r in range(2, num_rounds+1):
 
         round_num += 1
@@ -142,7 +177,7 @@ def protocol(parties, PKI, num_rounds):
     for party in parties:
         party.decide()
 
-        
+
     if DEBUG: print("OUTPUTS", [p.output for p in parties])
 
     _valid = validity(G, v, parties[1:])
