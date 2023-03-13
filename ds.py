@@ -60,7 +60,6 @@ class Party:
         if should_send:
             if DEBUG: print("Sending", msg, "from", self.num, "to", party.num)
 
-            msg.add_sig(sig)
             party.recieve(msg, PKI, round_num)
 
     def recieve(self, msg, PKI, round_num):
@@ -95,11 +94,16 @@ class Party:
         if self.is_honest:
             if len(self.msgs) > 0:
                 msg = last_round_msgs[-1]
-                v = msg.value
-                sig = self.sign(v)
-                msg.add_sig(sig)
-                msg.round = msg.round + 1
-                self.send(party, msg, PKI, round_num+1) #doublecheck this
+                sig = self.sign(msg.value)
+                new_sigs = msg.sigs.copy()
+                new_msg = Message(msg.value, new_sigs, round_num)
+                addSig = True
+                for s in msg.sigs:
+                    if s.party_num == self.num:
+                        addSig = False
+                if addSig:
+                    new_msg.add_sig(sig)
+                self.send(party, new_msg, PKI, round_num)
 
         #TODO: Implement relay for dishonest party
         #dishonest parties don't relay
@@ -165,8 +169,10 @@ def protocol(parties, PKI, num_rounds):
             print()
             print("ROUND " + str(round_num))
 
-
+        i = 0
         for party in parties:
+            print("party", i)
+            i += 1
             #If you recieved a message, forward it to everyone else
             for partyj in parties:
                 if not party.num == partyj.num:

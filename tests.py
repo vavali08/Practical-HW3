@@ -123,7 +123,7 @@ except AssertionError as e:
     print("PART 1: TEST 2 FAILED")
     print("Validity and agreement should hold when all parties are honest")
     print()
-"""
+
 try:
     test_ds_faulty_general()
     print("PART 2: TEST 1 PASSED")
@@ -131,7 +131,7 @@ except AssertionError as e:
     print("PART 2: TEST 1 FAILED")
     print("Validity and agreement should not hold when the general is dishonest")
     print()
-
+"""
 try:
     test_ds_honest_general()
     print("PART 2: TEST 2 PASSED")
